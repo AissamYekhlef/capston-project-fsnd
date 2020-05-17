@@ -6,7 +6,8 @@ import datetime
 
 database_filename = os.environ.get("DATABASE", "database.db")
 project_dir = os.path.dirname(os.path.abspath(__file__))
-database_path = "sqlite:///{}".format(os.path.join(project_dir, database_filename))
+database_path = "sqlite:///{}".format(
+    os.path.join(project_dir, database_filename))
 
 
 db = SQLAlchemy()
@@ -16,12 +17,14 @@ setup_db(app)
     binds a flask application and a SQLAlchemy service
 """
 
+
 def setup_db(app, database_path=database_path):
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
     db.init_app(app)
     db.create_all()
+
 
 def db_drop_and_create_all():
     db.drop_all()
@@ -32,11 +35,15 @@ def db_drop_and_create_all():
 Shows
 Have actor_id and movie_id for many to many relationships between classes
 """
+
+
 class Show(db.Model):
     __tablename__ = 'shows'
-    actor_id = db.Column(db.Integer(), db.ForeignKey('actors.id'), primary_key=True)
-    movie_id = db.Column(db.Integer(), db.ForeignKey('movies.id'), primary_key=True)
- 
+    actor_id = db.Column(db.Integer(), db.ForeignKey(
+        'actors.id'), primary_key=True)
+    movie_id = db.Column(db.Integer(), db.ForeignKey(
+        'movies.id'), primary_key=True)
+
     def __init__(self, actor_id, movie_id):
         self.actor_id = actor_id
         self.movie_id = movie_id
@@ -48,7 +55,7 @@ class Show(db.Model):
         return {
             "actor_id": self.actor_id,
             "movie_id": self.movie_id
-        }    
+        }
 
     def insert(self):
         db.session.add(self)
@@ -63,6 +70,7 @@ class Show(db.Model):
 
     def __repr__(self):
         return json.dumps(self.format())
+
 
 """
 Movies
@@ -81,16 +89,19 @@ class Movie(db.Model):
         self.title = title
         self.release_date = release_date
 
-
     def format(self):
-        return {"id": self.id, "title": self.title, "release_date": self.release_date}
+        return {
+            "id": self.id,
+            "title": self.title,
+            "release_date": self.release_date
+        }
 
     def get_movie(self):
         return {
             "id": self.id,
             "title": self.title,
             "release_date": self.release_date
-        }    
+        }
 
     def insert(self):
         db.session.add(self)
@@ -136,7 +147,6 @@ class Actor(db.Model):
             'age': self.age,
             'gender': self.gender
         }
-            
 
     def insert(self):
         db.session.add(self)

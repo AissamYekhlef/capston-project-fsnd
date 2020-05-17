@@ -6,8 +6,8 @@ from urllib.request import urlopen
 from setup import AUTH0_DOMAIN_setup, ALGORITHMS_setup, API_AUDIENCE_setup
 
 AUTH0_DOMAIN = AUTH0_DOMAIN_setup
-ALGORITHMS =  ALGORITHMS_setup
-API_AUDIENCE =  API_AUDIENCE_setup
+ALGORITHMS = ALGORITHMS_setup
+API_AUDIENCE = API_AUDIENCE_setup
 
 
 class AuthError(Exception):
@@ -51,10 +51,10 @@ def get_token_auth_header():
 
 def check_permissions(permission, payload):
     if 'permissions' not in payload:
-                        raise AuthError({
-                            'code': 'invalid_claims',
-                            'description': 'Permissions not included in JWT.'
-                        }, 400)
+        raise AuthError({
+            'code': 'invalid_claims',
+            'description': 'Permissions not included in JWT.'
+        }, 400)
 
     if permission not in payload['permissions']:
         raise AuthError({
@@ -63,6 +63,7 @@ def check_permissions(permission, payload):
         }, 401)
     return True
 
+
 def requires_auth(permission=''):
     def requires_auth_decorator(f):
         @wraps(f)
@@ -70,10 +71,10 @@ def requires_auth(permission=''):
             token = get_token_auth_header()
             try:
                 payload = verify_decode_jwt(token)
-            except:
+            except Exception:
                 abort(401)
 
-            check_permissions(permission, payload)    
+            check_permissions(permission, payload)
             return f(payload, *args, **kwargs)
 
         return wrapper
@@ -121,18 +122,19 @@ def verify_decode_jwt(token):
         except jwt.JWTClaimsError:
             raise AuthError({
                 'code': 'invalid_claims',
-                'description': '''Incorrect claims. 
+                'description': '''Incorrect claims.
                                 Please, check the audience and issuer.'''
             }, 401)
-        except:
+        except Exception:
             raise AuthError({
                 'code': 'invalid_header',
                 'description': 'Unable to parse authentication token.'
             }, 400)
     raise AuthError({
-                'code': 'invalid_header',
+        'code': 'invalid_header',
                 'description': 'Unable to find the appropriate key.'
-            }, 400)
+    }, 400)
+
 
 def requires_auth(permission=''):
     def requires_auth_decorator(f):
@@ -141,12 +143,11 @@ def requires_auth(permission=''):
             token = get_token_auth_header()
             try:
                 payload = verify_decode_jwt(token)
-            except:
+            except Exception:
                 abort(401)
 
-            check_permissions(permission, payload)    
+            check_permissions(permission, payload)
             return f(payload, *args, **kwargs)
 
         return wrapper
     return requires_auth_decorator
-
