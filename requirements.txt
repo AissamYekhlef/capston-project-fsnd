@@ -1,6 +1,6 @@
 ﻿alembic==1.4.2
 astroid==2.2.5
-certifi==2020.4.5.1
+certifi==2022.12.7
 click==7.1.2
 ecdsa==0.13.2
 Flask==1.1.2
